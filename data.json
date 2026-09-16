@@ -4,14 +4,14 @@
       "id": "vincent",
       "name": "Vincent",
       "baselineSubs": 704,
-      "currentSubs": 704,
+      "currentSubs": 712,
       "updatedAt": "2026-09-16",
       "weekBaselineSubs": 704,
       "weekResetAt": "2026-09-16",
       "history": [
         {
           "date": "2026-09-16",
-          "subs": 704
+          "subs": 712
         }
       ]
     }
