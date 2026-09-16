@@ -7,7 +7,100 @@
       "currentSubs": 704,
       "updatedAt": "2026-09-16",
       "weekBaselineSubs": 704,
-      "weekResetAt": "2026-09-16"
+      "weekResetAt": "2026-09-16",
+      "history": [
+        {
+          "date": "2026-09-16",
+          "subs": 704
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "id": "cheer0595",
+      "va": "Vincent",
+      "handle": "cheer0595",
+      "flagged": false,
+      "checkedAt": "2026-09-16T12:50:00Z",
+      "baselineFollowers": 5938,
+      "currentFollowers": 5938,
+      "following": 3,
+      "posts": 318,
+      "history": [
+        {
+          "date": "2026-09-16",
+          "followers": 5938
+        }
+      ]
+    },
+    {
+      "id": "lairdrop3",
+      "va": "Vincent",
+      "handle": "lairdrop3",
+      "flagged": false,
+      "checkedAt": "2026-09-16T12:50:00Z",
+      "baselineFollowers": 549,
+      "currentFollowers": 549,
+      "following": 12,
+      "posts": 563,
+      "history": [
+        {
+          "date": "2026-09-16",
+          "followers": 549
+        }
+      ]
+    },
+    {
+      "id": "clarkstphanie3",
+      "va": "Vincent",
+      "handle": "clarkstphanie3",
+      "flagged": false,
+      "checkedAt": "2026-09-16T12:50:00Z",
+      "baselineFollowers": 116,
+      "currentFollowers": 116,
+      "following": 6,
+      "posts": 270,
+      "history": [
+        {
+          "date": "2026-09-16",
+          "followers": 116
+        }
+      ]
+    },
+    {
+      "id": "Oksananochka",
+      "va": "Vincent",
+      "handle": "Oksananochka",
+      "flagged": false,
+      "checkedAt": "2026-09-16T12:50:00Z",
+      "baselineFollowers": 142,
+      "currentFollowers": 142,
+      "following": 13,
+      "posts": 292,
+      "history": [
+        {
+          "date": "2026-09-16",
+          "followers": 142
+        }
+      ]
+    },
+    {
+      "id": "chyntarasondra",
+      "va": "Vincent",
+      "handle": "chyntarasondra",
+      "flagged": false,
+      "checkedAt": "2026-09-16T12:50:00Z",
+      "baselineFollowers": 179,
+      "currentFollowers": 179,
+      "following": 8,
+      "posts": 329,
+      "history": [
+        {
+          "date": "2026-09-16",
+          "followers": 179
+        }
+      ]
     }
   ],
   "payoutTiers": {
@@ -82,62 +175,5 @@
       }
     ]
   },
-  "accounts": [
-    {
-      "id": "cheer0595",
-      "va": "Vincent",
-      "handle": "cheer0595",
-      "flagged": false,
-      "checkedAt": "2026-09-16T12:50:00Z",
-      "baselineFollowers": 5938,
-      "currentFollowers": 5938,
-      "following": 3,
-      "posts": 318
-    },
-    {
-      "id": "lairdrop3",
-      "va": "Vincent",
-      "handle": "lairdrop3",
-      "flagged": false,
-      "checkedAt": "2026-09-16T12:50:00Z",
-      "baselineFollowers": 549,
-      "currentFollowers": 549,
-      "following": 12,
-      "posts": 563
-    },
-    {
-      "id": "clarkstphanie3",
-      "va": "Vincent",
-      "handle": "clarkstphanie3",
-      "flagged": false,
-      "checkedAt": "2026-09-16T12:50:00Z",
-      "baselineFollowers": 116,
-      "currentFollowers": 116,
-      "following": 6,
-      "posts": 270
-    },
-    {
-      "id": "Oksananochka",
-      "va": "Vincent",
-      "handle": "Oksananochka",
-      "flagged": false,
-      "checkedAt": "2026-09-16T12:50:00Z",
-      "baselineFollowers": 142,
-      "currentFollowers": 142,
-      "following": 13,
-      "posts": 292
-    },
-    {
-      "id": "chyntarasondra",
-      "va": "Vincent",
-      "handle": "chyntarasondra",
-      "flagged": false,
-      "checkedAt": "2026-09-16T12:50:00Z",
-      "baselineFollowers": 179,
-      "currentFollowers": 179,
-      "following": 8,
-      "posts": 329
-    }
-  ],
   "baselineDate": "2026-09-16"
 }
