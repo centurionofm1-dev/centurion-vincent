@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Centurion Agency</title>
+</head>
+<body>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Manrope:wght@400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #070605;
+    --surface: #121110;
+    --surface-2: #1a1815;
+    --border: #332c1f;
+    --border-soft: #211d16;
+    --text: #f2ecdf;
+    --text-dim: #a89e8c;
+    --text-faint: #6e6555;
+    --gold: #c9a227;
+    --gold-bright: #e8c766;
+    --gold-soft: rgba(201,162,39,0.14);
+    --silver: #b9bcc0;
+    --blood: #a5322c;
+    --blood-soft: rgba(165,50,44,0.16);
+    --shadow: rgba(0,0,0,0.55);
+  }
+
+  *{ box-sizing: border-box; }
+  html, body{ background: var(--bg); }
+  body{
+    color: var(--text);
+    font-family: 'Manrope', system-ui, sans-serif;
+    margin: 0;
+    min-height: 100%;
+  }
+  [hidden]{ display: none !important; }
+
+  h1, h2, h3, .wordmark{ font-family: 'Cinzel', Georgia, serif; }
+  .mono{ font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  a{ color: inherit; }
+
+  .topbar{
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px; background: rgba(7,6,5,0.88); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .topbar img{ width: 30px; height: 30px; display: block; }
+  .topbar .brand{
+    font-family: 'Cinzel', serif; font-weight: 700; font-size: 14px;
+    letter-spacing: 0.12em; color: var(--gold-bright);
+  }
+  .topbar nav{ margin-left: auto; display: flex; gap: 4px; }
+  .topbar nav button{
+    font-family: 'Manrope', sans-serif; font-size: 12.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: none; border: none; color: var(--text-dim);
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+  }
+  .topbar nav button:hover{ color: var(--text); background: var(--surface-2); }
+  .topbar nav button.active{ color: var(--bg); background: var(--gold); }
+
+  main{ max-width: 900px; margin: 0 auto; padding: 0 20px 64px; }
+
+  /* ---- HOME ---- */
+  .hero{ text-align: center; padding: 56px 0 8px; }
+  .hero img{ width: 148px; height: 148px; margin: 0 auto 20px; display: block; filter: drop-shadow(0 0 26px rgba(201,162,39,0.18)); }
+  .hero h1{
+    font-size: 38px; font-weight: 700; letter-spacing: 0.05em; margin: 0;
+    color: var(--text); text-wrap: balance;
+  }
+  .hero .sub{
+    font-family: 'Cinzel', serif; font-size: 12.5px; font-weight: 600;
+    letter-spacing: 0.32em; color: var(--gold); margin: 10px 0 0;
+  }
+  .hero .rule{
+    width: 64px; height: 1px; margin: 22px auto; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .hero p.tagline{
+    color: var(--text-dim); font-size: 14.5px; max-width: 46ch; margin: 0 auto 40px;
+  }
+
+  .badge-grid{
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; margin-bottom: 40px;
+  }
+  .badge-card{
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 26px 20px; text-align: center; cursor: pointer;
+    box-shadow: 0 10px 26px var(--shadow); position: relative;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+  }
+  .badge-card::before{
+    content: ''; position: absolute; inset: 6px; border: 1px solid var(--border-soft); border-radius: 2px; pointer-events: none;
+  }
+  .badge-card:hover{ border-color: var(--gold); transform: translateY(-2px); }
+  .badge-card .glyph{ font-size: 26px; margin-bottom: 10px; }
+  .badge-card h3{
+    font-size: 16px; letter-spacing: 0.1em; margin: 0 0 6px; color: var(--gold-bright);
+  }
+  .badge-card p{ font-size: 12.5px; color: var(--text-faint); margin: 0 0 14px; }
+  .badge-card .teaser{ font-size: 24px; font-weight: 600; color: var(--text); }
+  .badge-card .teaser small{ display: block; font-size: 10.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-top: 2px; }
+
+  .motto{
+    text-align: center; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.28em;
+    color: var(--text-faint); padding-top: 8px; border-top: 1px solid var(--border-soft);
+  }
+
+  /* ---- SHARED SECTION HEADER ---- */
+  .section-head{
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
+    gap: 16px; margin: 36px 0 24px; border-bottom: 1px solid var(--border-soft); padding-bottom: 18px;
+  }
+  .eyebrow{ font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 700; margin: 0 0 6px; }
+  .section-head h2{ font-size: 26px; font-weight: 700; margin: 0; }
+  .section-head p{ color: var(--text-dim); margin: 6px 0 0; font-size: 13.5px; max-width: 42ch; }
+  .sync-pill{
+    display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px; font-size: 12px; color: var(--text-dim); white-space: nowrap;
+  }
+  .dot{ width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+
+  /* ---- TRAFFIC ---- */
+  .totals{ display: flex; gap: 12px; margin-bottom: 26px; flex-wrap: wrap; }
+  .tile{ flex: 1; min-width: 140px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px 18px; }
+  .tile .label{ font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 8px; }
+  .tile .num{ font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; line-height: 1; color: var(--gold-bright); }
+  .tile .sub{ font-size: 11.5px; color: var(--text-faint); margin: 6px 0 0; font-family: 'IBM Plex Mono', monospace; }
+  .tile .sub.gain{ color: var(--gold-bright); font-weight: 600; }
+
+  .board{ background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 6px 22px; box-shadow: 0 6px 18px var(--shadow); }
+  .row{ display: grid; grid-template-columns: 34px 1fr 84px; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border-soft); }
+  .row:last-child{ border-bottom: none; }
+  .medal{ width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+  .row:nth-child(1) .medal{ background: var(--gold); color: #1a1408; border-color: var(--gold); }
+  .va-name{ font-size: 15.5px; font-weight: 700; margin: 0 0 6px; }
+  .bar-track{ position: relative; height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .bar-fill{ position: absolute; inset: 0 auto 0 0; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); transition: width 0.5s ease; }
+  .row-count{ text-align: right; font-size: 19px; font-weight: 700; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+  .row-count small{ display: block; font-size: 10px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ---- SHADOWBAN ---- */
+  .sb-groups h3{
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-dim); margin: 26px 0 12px; font-family: 'Manrope', sans-serif;
+  }
+  .sb-groups h3:first-of-type{ margin-top: 0; }
+  .sb-board{ display: flex; flex-direction: column; gap: 10px; }
+  .sb-row{
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    padding: 14px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 4px 14px var(--shadow);
+  }
+  .sb-row .handle{ font-size: 15px; font-weight: 700; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .sb-row.flagged{ border-color: var(--blood); background: linear-gradient(180deg, var(--blood-soft), var(--surface)); }
+  .sb-row.flagged .handle{ color: #ff6b61; }
+  .sb-badge{
+    font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 2px; white-space: nowrap;
+    letter-spacing: 0.06em; background: var(--blood); color: #fff2f1; border: 1px solid #d84a42;
+    box-shadow: 0 0 14px rgba(165,50,44,0.45);
+  }
+  .sb-time{ font-size: 11px; color: var(--text-faint); white-space: nowrap; margin-left: auto; }
+
+  /* ---- EARNINGS ---- */
+  .er-board{ display: flex; flex-direction: column; gap: 14px; }
+  .er-card{ background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px 22px; box-shadow: 0 6px 18px var(--shadow); }
+  .er-card-head{ display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  .er-card-head .va-name{ font-size: 17px; font-weight: 700; margin: 0; }
+  .er-payout{ font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: var(--gold-bright); }
+  .er-sub{ font-size: 12.5px; color: var(--text-dim); margin: 0; }
+  .er-progress-track{ position: relative; height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin: 14px 0 8px; }
+  .er-progress-fill{ position: absolute; inset: 0 auto 0 0; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); transition: width 0.5s ease; }
+  .er-progress-labels{ display: flex; justify-content: space-between; font-size: 11px; color: var(--text-faint); }
+  .er-card.no-grid{ opacity: 0.6; }
+  .er-card.no-grid .er-sub{ font-style: italic; }
+  .er-maxed{ color: var(--gold-bright); font-weight: 700; }
+
+  /* ---- GROWTH ---- */
+  .gr-groups h3{
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-dim); margin: 26px 0 12px; font-family: 'Manrope', sans-serif;
+  }
+  .gr-groups h3:first-of-type{ margin-top: 0; }
+  .gr-board{ display: flex; flex-direction: column; gap: 10px; }
+  .gr-row{
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    padding: 14px 18px; display: flex; align-items: center; gap: 18px; box-shadow: 0 4px 14px var(--shadow);
+    flex-wrap: wrap;
+  }
+  .gr-row.suspended{ border-color: var(--blood); background: linear-gradient(180deg, var(--blood-soft), var(--surface)); opacity: 0.85; }
+  .gr-row .handle{ font-size: 15px; font-weight: 700; flex: 1; min-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+  .gr-stat{ text-align: right; min-width: 64px; }
+  .gr-stat .v{ font-size: 17px; font-weight: 700; color: var(--text); }
+  .gr-stat .k{ display: block; font-size: 9.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  .gr-stat .gain{ color: var(--gold-bright); }
+  .gr-stat .gain.zero{ color: var(--text-faint); }
+  .gr-suspended-tag{ font-size: 11px; font-weight: 800; letter-spacing: 0.06em; color: #ff6b61; text-transform: uppercase; }
+
+  footer.page-footer{
+    margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--border-soft);
+    font-size: 12px; color: var(--text-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  @media (max-width: 560px){
+    .hero h1{ font-size: 28px; }
+    .sb-row{ flex-wrap: wrap; }
+    .sb-row .handle{ flex-basis: 100%; }
+  }
+</style>
+
+<div class="topbar">
+  <span aria-hidden="true" style="font-size:22px;line-height:1;display:block;filter:drop-shadow(0 0 6px rgba(201,162,39,0.35));">🏛️</span>
+  <span class="brand">CENTURION AGENCY</span>
+  <nav>
+    <button type="button" data-view="home">Home</button>
+    <button type="button" data-view="traffic">Traffic</button>
+    <button type="button" data-view="earnings" data-manager-only>Earnings</button>
+    <button type="button" data-view="growth">Growth</button>
+    <button type="button" data-view="shadowban">Shadowban</button>
+  </nav>
+</div>
+
+<main>
+
+  <section id="view-home">
+    <div class="hero">
+      <span aria-hidden="true" style="font-size:96px;line-height:1;display:block;margin:0 auto 20px;filter:drop-shadow(0 0 26px rgba(201,162,39,0.18));">🏛️</span>
+      <h1>CENTURION AGENCY</h1>
+      <p class="sub">O F M&nbsp;&nbsp;O P E R A T I O N S</p>
+      <div class="rule"></div>
+      <p class="tagline">Command center for the agency's Twitter growth operations &mdash; VA traffic and account health, at a glance.</p>
+    </div>
+
+    <div class="badge-grid">
+      <div class="badge-card" data-view="traffic">
+        <div class="glyph">⚔️</div>
+        <h3>TRAFFIC</h3>
+        <p>New subs brought in by each VA</p>
+        <div class="teaser mono" id="homeTrafficTeaser">&mdash;<small>total new subs</small></div>
+      </div>
+      <div class="badge-card" data-view="earnings" data-manager-only>
+        <div class="glyph">💰</div>
+        <h3>EARNINGS</h3>
+        <p>Manager payout this week</p>
+        <div class="teaser mono" id="homeEarningsTeaser">&mdash;<small>this week's payout</small></div>
+      </div>
+      <div class="badge-card" data-view="growth">
+        <div class="glyph">📈</div>
+        <h3>GROWTH</h3>
+        <p>Followers per X account</p>
+        <div class="teaser mono" id="homeGrowthTeaser">&mdash;<small>total followers</small></div>
+      </div>
+      <div class="badge-card" data-view="shadowban">
+        <div class="glyph">🛡️</div>
+        <h3>SHADOWBAN WATCH</h3>
+        <p>X account status per VA</p>
+        <div class="teaser mono" id="homeShadowbanTeaser">&mdash;<small>accounts flagged</small></div>
+      </div>
+    </div>
+
+    <p class="motto">DISCIPLINA &middot; VIRTUS &middot; IMPERIUM</p>
+  </section>
+
+  <section id="view-traffic" hidden>
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Traffic ledger</p>
+        <h2>Your New Subs</h2>
+        <p>New subscribers brought in since 16/09/2026, via your Twitter tracking link.</p>
+      </div>
+      <div class="sync-pill"><span class="dot"></span><span>Auto-synced 3x/day</span></div>
+    </div>
+
+    <div class="totals">
+      <div class="tile"><p class="label">Total new subs</p><p class="num mono" id="tileSubs">&mdash;</p></div>
+    </div>
+
+    <div class="board" id="trafficBoard"></div>
+
+    <footer class="page-footer">
+      <span>One Twitter tracking link = one VA.</span>
+      <span id="trafficFootNote">&mdash;</span>
+    </footer>
+  </section>
+
+  <section id="view-earnings" hidden>
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Manager payouts</p>
+        <h2>Weekly Earnings</h2>
+        <p>Payout tier based on subs brought in this week. Resets every Wednesday.</p>
+      </div>
+      <div class="sync-pill"><span class="dot"></span><span>Auto-synced 3x/day</span></div>
+    </div>
+
+    <div class="er-board" id="erBoard"></div>
+
+    <footer class="page-footer">
+      <span>Weekly counter resets every Wednesday.</span>
+      <span id="erFootNote">&mdash;</span>
+    </footer>
+  </section>
+
+  <section id="view-growth" hidden>
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">X account growth</p>
+        <h2>Followers by Account</h2>
+        <p>Followers, following and posts for every tracked X account, checked several times a day.</p>
+      </div>
+      <div class="sync-pill"><span class="dot"></span><span>Auto-synced 4x/day</span></div>
+    </div>
+
+    <div class="totals" id="grTotals"></div>
+
+    <div class="gr-groups" id="grGroups"></div>
+
+    <footer class="page-footer">
+      <span>Checked automatically several times a day.</span>
+      <span id="grFootNote">&mdash;</span>
+    </footer>
+  </section>
+
+  <section id="view-shadowban" hidden>
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">X account monitoring</p>
+        <h2>Shadowban Watch</h2>
+        <p>Status of every VA's X account. If it's not listed as banned, it's fine.</p>
+      </div>
+      <div class="sync-pill"><span class="dot"></span><span>Auto-synced 4x/day</span></div>
+    </div>
+
+    <div class="totals">
+      <div class="tile"><p class="label">Accounts watched</p><p class="num mono" id="tileAccCount">&mdash;</p></div>
+      <div class="tile"><p class="label">Shadowbanned</p><p class="num mono" id="tileAccAlerts">&mdash;</p></div>
+    </div>
+
+    <div class="sb-groups" id="sbGroups"></div>
+
+    <footer class="page-footer">
+      <span>Checked automatically 4x a day.</span>
+      <span id="sbFootNote">&mdash;</span>
+    </footer>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  var FALLBACK_VAS = [
+    { id: 'vincent', name: 'Vincent', baselineSubs: 704, currentSubs: 704, updatedAt: '2026-09-16', weekBaselineSubs: 704, weekResetAt: '2026-09-16' },
+    { id: 'starks', name: 'Starks', baselineSubs: 103, currentSubs: 103, updatedAt: '2026-09-16', weekBaselineSubs: 103, weekResetAt: '2026-09-16' }
+  ];
+  FALLBACK_VAS = FALLBACK_VAS.filter(function(v){ return v.name === 'Vincent'; });
+  var PAYOUT_TIERS = {
+    vincent: [
+      { subs: 75, payout: 50 }, { subs: 125, payout: 75 }, { subs: 300, payout: 100 },
+      { subs: 500, payout: 125 }, { subs: 750, payout: 150 }, { subs: 1000, payout: 175 },
+      { subs: 1250, payout: 210 }, { subs: 1500, payout: 255 }, { subs: 1750, payout: 310 },
+      { subs: 2000, payout: 375 }, { subs: 2250, payout: 450 }, { subs: 2500, payout: 535 },
+      { subs: 2750, payout: 630 }, { subs: 3000, payout: 735 }, { subs: 3250, payout: 850 },
+      { subs: 3550, payout: 975 }, { subs: 4000, payout: 1220 }
+    ]
+  };
+  var isManager = true;
+  document.querySelectorAll('[data-manager-only]').forEach(function(el){ el.hidden = !isManager; });
+  var FALLBACK_ACCOUNTS = [
+    { id: 'darkkard87', va: 'Starks', handle: 'darkkard87', flagged: true, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 59, currentFollowers: 59, following: 2, posts: 264 },
+    { id: 'poloybon', va: 'Starks', handle: 'poloybon', flagged: true, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 80, currentFollowers: 80, following: 3, posts: 278 },
+    { id: 'ava0dvcv', va: 'Starks', handle: 'ava0dvcv', flagged: true, suspended: true, checkedAt: '2026-09-16T13:10:00Z' },
+    { id: 'cheer0595', va: 'Vincent', handle: 'cheer0595', flagged: false, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 5938, currentFollowers: 5938, following: 3, posts: 318 },
+    { id: 'lairdrop3', va: 'Vincent', handle: 'lairdrop3', flagged: false, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 549, currentFollowers: 549, following: 12, posts: 563 },
+    { id: 'clarkstphanie3', va: 'Vincent', handle: 'clarkstphanie3', flagged: false, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 116, currentFollowers: 116, following: 6, posts: 270 },
+    { id: 'Oksananochka', va: 'Vincent', handle: 'Oksananochka', flagged: false, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 142, currentFollowers: 142, following: 13, posts: 292 },
+    { id: 'chyntarasondra', va: 'Vincent', handle: 'chyntarasondra', flagged: false, checkedAt: '2026-09-16T12:50:00Z', baselineFollowers: 179, currentFollowers: 179, following: 8, posts: 329 }
+  ];
+  FALLBACK_ACCOUNTS = FALLBACK_ACCOUNTS.filter(function(a){ return a.va === 'Vincent'; });
+  var BASELINE_DATE = '2026-09-16';
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtInt(n){ return new Intl.NumberFormat('en-US').format(Math.round(n || 0)); }
+  function fmtDateFR(d){
+    if(!d) return '\u2014';
+    var parts = String(d).split('-');
+    if(parts.length !== 3) return d;
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  function fmtTimeEN(iso){
+    if(!iso) return '\u2014';
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return String(iso);
+    return d.toLocaleDateString('en-GB', {day:'2-digit', month:'2-digit'}) + ' \u00b7 ' + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  /* ---------- TRAFFIC ---------- */
+  var elTileSubs = document.getElementById('tileSubs');
+  var elTileVaCount = document.getElementById('tileVaCount');
+  var elTrafficBoard = document.getElementById('trafficBoard');
+  var elTrafficFootNote = document.getElementById('trafficFootNote');
+  var elHomeTrafficTeaser = document.getElementById('homeTrafficTeaser');
+
+  function newSubs(v){ return Math.max(0, (v.currentSubs||0) - (v.baselineSubs||0)); }
+
+  function renderTraffic(vas){
+    var sorted = vas.slice().sort(function(a,b){ return newSubs(b) - newSubs(a); });
+    var totalSubs = sorted.reduce(function(sum, v){ return sum + newSubs(v); }, 0);
+    var maxSubs = Math.max.apply(null, sorted.map(newSubs).concat([1]));
+
+    elTileSubs.textContent = fmtInt(totalSubs);
+    if(elTileVaCount) elTileVaCount.textContent = String(sorted.length);
+    elHomeTrafficTeaser.innerHTML = fmtInt(totalSubs) + '<small>total new subs</small>';
+
+    if(sorted.length === 1){
+      var v0 = sorted[0];
+      var count0 = newSubs(v0);
+      elTrafficBoard.innerHTML = '' +
+        '<div class="row" style="grid-template-columns:1fr auto;">' +
+          '<div>' +
+            '<p class="va-name">' + escapeHtml(v0.name) + '</p>' +
+            '<div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>' +
+          '</div>' +
+          '<div class="row-count">' + fmtInt(count0) + '<small>subs</small></div>' +
+        '</div>';
+    } else {
+      elTrafficBoard.innerHTML = sorted.map(function(v, i){
+        var count = newSubs(v);
+        var pct = Math.max(4, Math.round(count / maxSubs * 100));
+        return '' +
+          '<div class="row">' +
+            '<div class="medal mono">' + (i+1) + '</div>' +
+            '<div>' +
+              '<p class="va-name">' + escapeHtml(v.name) + '</p>' +
+              '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+            '</div>' +
+            '<div class="row-count">' + fmtInt(count) + '<small>subs</small></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    var checkedTimes = sorted.map(function(v){ return v.updatedAt; }).filter(Boolean);
+    var latest = checkedTimes.length ? checkedTimes.reduce(function(a,b){ return b > a ? b : a; }) : '';
+    elTrafficFootNote.textContent = 'Counter started ' + fmtDateFR(BASELINE_DATE) + ' \u00b7 Updated ' + fmtDateFR(latest);
+  }
+
+  /* ---------- EARNINGS ---------- */
+  var elErBoard = document.getElementById('erBoard');
+  var elErFootNote = document.getElementById('erFootNote');
+  var elHomeEarningsTeaser = document.getElementById('homeEarningsTeaser');
+
+  function weeklySubs(v){
+    var base = (v.weekBaselineSubs != null) ? v.weekBaselineSubs : (v.baselineSubs || 0);
+    return Math.max(0, (v.currentSubs||0) - base);
+  }
+  function tierInfoFor(vaId, subs){
+    var tiers = PAYOUT_TIERS[vaId];
+    if(!tiers) return null;
+    var current = null, next = null;
+    for(var i=0;i<tiers.length;i++){
+      if(subs >= tiers[i].subs) current = tiers[i];
+      else { next = tiers[i]; break; }
+    }
+    return { payout: current ? current.payout : 0, currentTier: current, nextTier: next };
+  }
+
+  function renderEarnings(vas){
+    if(!isManager) return;
+    var sorted = vas.slice().sort(function(a,b){ return String(a.name).localeCompare(String(b.name)); });
+    var totalPayout = 0;
+    var latestReset = '';
+
+    elErBoard.innerHTML = sorted.map(function(v){
+      if(v.weekResetAt && v.weekResetAt > latestReset) latestReset = v.weekResetAt;
+      var subs = weeklySubs(v);
+      var info = tierInfoFor(v.id, subs);
+
+      if(!info){
+        return '' +
+          '<div class="er-card no-grid">' +
+            '<div class="er-card-head"><p class="va-name">' + escapeHtml(v.name) + '</p></div>' +
+            '<p class="er-sub">No payout grid configured for this VA.</p>' +
+          '</div>';
+      }
+
+      totalPayout += info.payout;
+      var pct, labelsHtml;
+      if(info.nextTier){
+        var base = info.currentTier ? info.currentTier.subs : 0;
+        pct = Math.max(2, Math.min(100, Math.round((subs - base) / (info.nextTier.subs - base) * 100)));
+        labelsHtml = '<span>' + fmtInt(subs) + ' subs</span><span>' + fmtInt(info.nextTier.subs) + ' subs &rarr; $' + fmtInt(info.nextTier.payout) + '</span>';
+      } else {
+        pct = 100;
+        labelsHtml = '<span>' + fmtInt(subs) + ' subs</span><span class="er-maxed">Top tier reached</span>';
+      }
+
+      return '' +
+        '<div class="er-card">' +
+          '<div class="er-card-head">' +
+            '<p class="va-name">' + escapeHtml(v.name) + '</p>' +
+            '<div class="er-payout mono">$' + fmtInt(info.payout) + '</div>' +
+          '</div>' +
+          '<p class="er-sub">' + fmtInt(subs) + ' subs this week</p>' +
+          '<div class="er-progress-track"><div class="er-progress-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="er-progress-labels mono">' + labelsHtml + '</div>' +
+        '</div>';
+    }).join('');
+
+    elHomeEarningsTeaser.innerHTML = '$' + fmtInt(totalPayout) + '<small>this week&#39;s payout</small>';
+    elErFootNote.textContent = 'Last reset: ' + fmtDateFR(latestReset);
+  }
+
+  /* ---------- SHADOWBAN ---------- */
+  var elTileAccCount = document.getElementById('tileAccCount');
+  var elTileAccAlerts = document.getElementById('tileAccAlerts');
+  var elSbGroups = document.getElementById('sbGroups');
+  var elSbFootNote = document.getElementById('sbFootNote');
+  var elHomeSbTeaser = document.getElementById('homeShadowbanTeaser');
+
+  function isFlagged(a){
+    if(a.flagged === true || a.suspended === true) return true;
+    var s = String(a.status || '').toLowerCase();
+    return /(shadowban|suspend|banned)/.test(s);
+  }
+  function labelFor(a){
+    if(a.suspended === true) return 'SUSPENDED';
+    var s = String(a.status || '').toLowerCase();
+    if(/suspend/.test(s)) return 'SUSPENDED';
+    return 'SHADOWBANNED';
+  }
+
+  function renderShadowban(accounts){
+    var flaggedCount = accounts.filter(isFlagged).length;
+    elTileAccCount.textContent = String(accounts.length);
+    elTileAccAlerts.textContent = String(flaggedCount);
+    elHomeSbTeaser.innerHTML = String(flaggedCount) + '<small>accounts flagged</small>';
+
+    var groups = {};
+    accounts.forEach(function(a){
+      var va = a.va || 'Other';
+      if(!groups[va]) groups[va] = [];
+      groups[va].push(a);
+    });
+    var vaNames = Object.keys(groups).sort();
+    elSbGroups.innerHTML = vaNames.map(function(va){
+      var rows = groups[va].slice().sort(function(a,b){
+        return (isFlagged(b) ? 1 : 0) - (isFlagged(a) ? 1 : 0);
+      }).map(function(a){
+        var flagged = isFlagged(a);
+        return '' +
+          '<div class="sb-row' + (flagged ? ' flagged' : '') + '">' +
+            '<div class="handle">@' + escapeHtml(a.handle) + '</div>' +
+            (flagged ? '<span class="sb-badge">' + labelFor(a) + '</span>' : '') +
+            '<span class="sb-time mono">' + fmtTimeEN(a.checkedAt) + '</span>' +
+          '</div>';
+      }).join('');
+      return '<h3>' + escapeHtml(va) + '</h3><div class="sb-board">' + rows + '</div>';
+    }).join('');
+
+    var checkedTimes = accounts.map(function(a){ return a.checkedAt; }).filter(Boolean);
+    var latest = checkedTimes.length ? checkedTimes.reduce(function(a,b){ return b > a ? b : a; }) : '';
+    elSbFootNote.textContent = 'Last checked: ' + fmtTimeEN(latest);
+  }
+
+  /* ---------- GROWTH ---------- */
+  var elGrTotals = document.getElementById('grTotals');
+  var elGrGroups = document.getElementById('grGroups');
+  var elGrFootNote = document.getElementById('grFootNote');
+  var elHomeGrowthTeaser = document.getElementById('homeGrowthTeaser');
+
+  function followersGained(a){ return (a.currentFollowers||0) - (a.baselineFollowers||0); }
+
+  function renderGrowth(accounts){
+    var active = accounts.filter(function(a){ return !a.suspended; });
+    var totalFollowers = active.reduce(function(sum, a){ return sum + (a.currentFollowers||0); }, 0);
+    elHomeGrowthTeaser.innerHTML = fmtInt(totalFollowers) + '<small>total followers</small>';
+
+    var groups = {};
+    accounts.forEach(function(a){
+      var va = a.va || 'Other';
+      if(!groups[va]) groups[va] = [];
+      groups[va].push(a);
+    });
+    var vaNames = Object.keys(groups).sort();
+
+    elGrTotals.innerHTML = vaNames.map(function(va){
+      var accs = groups[va].filter(function(a){ return !a.suspended; });
+      var vaFollowers = accs.reduce(function(sum, a){ return sum + (a.currentFollowers||0); }, 0);
+      var vaGained = accs.reduce(function(sum, a){ return sum + followersGained(a); }, 0);
+      var gainText = (vaGained > 0 ? '+' : '') + fmtInt(vaGained) + ' gained';
+      var gainClass = vaGained > 0 ? 'sub gain' : 'sub';
+      return '' +
+        '<div class="tile">' +
+          '<p class="label">Total Followers &mdash; ' + escapeHtml(va) + '</p>' +
+          '<p class="num mono">' + fmtInt(vaFollowers) + '</p>' +
+          '<p class="' + gainClass + '">' + gainText + '</p>' +
+        '</div>';
+    }).join('');
+
+    elGrGroups.innerHTML = vaNames.map(function(va){
+      var rows = groups[va].slice().sort(function(a,b){ return (b.currentFollowers||0) - (a.currentFollowers||0); }).map(function(a){
+        if(a.suspended){
+          return '' +
+            '<div class="gr-row suspended">' +
+              '<div class="handle">@' + escapeHtml(a.handle) + '</div>' +
+              '<span class="gr-suspended-tag">Suspended</span>' +
+            '</div>';
+        }
+        var gain = followersGained(a);
+        var gainClass = gain > 0 ? 'gain' : 'gain zero';
+        var gainText = gain > 0 ? '+' + fmtInt(gain) : fmtInt(gain);
+        return '' +
+          '<div class="gr-row">' +
+            '<div class="handle">@' + escapeHtml(a.handle) + '</div>' +
+            '<div class="gr-stat"><span class="v mono">' + fmtInt(a.currentFollowers) + '</span><span class="k">Followers</span></div>' +
+            '<div class="gr-stat"><span class="v mono ' + gainClass + '">' + gainText + '</span><span class="k">Gained</span></div>' +
+            '<div class="gr-stat"><span class="v mono">' + fmtInt(a.posts) + '</span><span class="k">Posts</span></div>' +
+            '<div class="gr-stat"><span class="v mono">' + fmtInt(a.following) + '</span><span class="k">Following</span></div>' +
+          '</div>';
+      }).join('');
+      return '<h3>' + escapeHtml(va) + '</h3><div class="gr-board">' + rows + '</div>';
+    }).join('');
+
+    var checkedTimes = accounts.map(function(a){ return a.statsCheckedAt || a.checkedAt; }).filter(Boolean);
+    var latest = checkedTimes.length ? checkedTimes.reduce(function(a,b){ return b > a ? b : a; }) : '';
+    elGrFootNote.textContent = 'Last checked: ' + fmtTimeEN(latest);
+  }
+
+  /* ---------- ROUTING ---------- */
+  var views = ['home', 'traffic', 'earnings', 'growth', 'shadowban'];
+  function showView(name){
+    if(views.indexOf(name) === -1) name = 'home';
+    if(name === 'earnings' && !isManager) name = 'home';
+    views.forEach(function(v){
+      document.getElementById('view-' + v).hidden = (v !== name);
+    });
+    document.querySelectorAll('.topbar nav button').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-view') === name);
+    });
+  }
+  document.querySelectorAll('[data-view]').forEach(function(el){
+    el.addEventListener('click', function(){
+      var name = el.getAttribute('data-view');
+      window.location.hash = name === 'home' ? '' : name;
+      showView(name);
+    });
+  });
+  window.addEventListener('hashchange', function(){
+    showView(window.location.hash.replace('#', '') || 'home');
+  });
+  showView(window.location.hash.replace('#', '') || 'home');
+
+  /* ---------- PAINT (static, auto-updated by scheduled sync) ---------- */
+  renderTraffic(FALLBACK_VAS);
+  renderEarnings(FALLBACK_VAS);
+  renderShadowban(FALLBACK_ACCOUNTS);
+  renderGrowth(FALLBACK_ACCOUNTS);
+})();
+</script>
+
+</body>
+</html>
