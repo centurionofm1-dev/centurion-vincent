@@ -137,6 +137,7 @@
   .medal{ width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
   .row:nth-child(1) .medal{ background: var(--gold); color: #1a1408; border-color: var(--gold); }
   .va-name{ font-size: 15.5px; font-weight: 700; margin: 0 0 6px; }
+  .va-delta{ font-size: 11px; color: var(--text-faint); margin: 0 0 6px; font-family: 'IBM Plex Mono', monospace; }
   .bar-track{ position: relative; height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
   .bar-fill{ position: absolute; inset: 0 auto 0 0; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); transition: width 0.5s ease; }
   .row-count{ text-align: right; font-size: 19px; font-weight: 700; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
@@ -398,6 +399,35 @@
     if(isNaN(d.getTime())) return String(iso);
     return d.toLocaleDateString('en-GB', {day:'2-digit', month:'2-digit'}) + ' · ' + d.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
   }
+  function todayStr(){
+    var d = new Date();
+    return d.getUTCFullYear() + '-' + String(d.getUTCMonth()+1).padStart(2,'0') + '-' + String(d.getUTCDate()).padStart(2,'0');
+  }
+  function mondayOf(dateStr){
+    var d = new Date(dateStr + 'T00:00:00Z');
+    var day = d.getUTCDay();
+    var diff = (day === 0 ? 6 : day - 1);
+    d.setUTCDate(d.getUTCDate() - diff);
+    return d.toISOString().slice(0,10);
+  }
+  function computeDeltas(history, currentValue, field){
+    if(!history || !history.length) return { day: null, week: null };
+    var sorted = history.slice().sort(function(a,b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+    var today = todayStr();
+    var prevEntry = null;
+    for(var i=0;i<sorted.length;i++){ if(sorted[i].date < today) prevEntry = sorted[i]; }
+    var monday = mondayOf(today);
+    var weekStartEntry = null;
+    for(var i=0;i<sorted.length;i++){ if(sorted[i].date <= monday) weekStartEntry = sorted[i]; }
+    return {
+      day: prevEntry ? (currentValue - prevEntry[field]) : null,
+      week: weekStartEntry ? (currentValue - weekStartEntry[field]) : null
+    };
+  }
+  function fmtDelta(n){
+    if(n == null) return '—';
+    return (n > 0 ? '+' : '') + fmtInt(n);
+  }
 
   /* ---------- TRAFFIC ---------- */
   var elTileSubs = document.getElementById('tileSubs');
@@ -420,10 +450,12 @@
     if(sorted.length === 1){
       var v0 = sorted[0];
       var count0 = newSubs(v0);
+      var d0 = computeDeltas(v0.history, v0.currentSubs, 'subs');
       elTrafficBoard.innerHTML = '' +
         '<div class="row" style="grid-template-columns:1fr auto;">' +
           '<div>' +
             '<p class="va-name">' + escapeHtml(v0.name) + '</p>' +
+            '<p class="va-delta mono">Yesterday: ' + fmtDelta(d0.day) + ' &middot; This week: ' + fmtDelta(d0.week) + '</p>' +
             '<div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>' +
           '</div>' +
           '<div class="row-count">' + fmtInt(count0) + '<small>subs</small></div>' +
@@ -432,11 +464,13 @@
       elTrafficBoard.innerHTML = sorted.map(function(v, i){
         var count = newSubs(v);
         var pct = Math.max(4, Math.round(count / maxSubs * 100));
+        var d = computeDeltas(v.history, v.currentSubs, 'subs');
         return '' +
           '<div class="row">' +
             '<div class="medal mono">' + (i+1) + '</div>' +
             '<div>' +
               '<p class="va-name">' + escapeHtml(v.name) + '</p>' +
+              '<p class="va-delta mono">Yesterday: ' + fmtDelta(d.day) + ' &middot; This week: ' + fmtDelta(d.week) + '</p>' +
               '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
             '</div>' +
             '<div class="row-count">' + fmtInt(count) + '<small>subs</small></div>' +
@@ -594,11 +628,19 @@
       var vaGained = accs.reduce(function(sum, a){ return sum + followersGained(a); }, 0);
       var gainText = (vaGained > 0 ? '+' : '') + fmtInt(vaGained) + ' gained';
       var gainClass = vaGained > 0 ? 'sub gain' : 'sub';
+      var vaDayTotal = 0, vaWeekTotal = 0, hasDay = false, hasWeek = false;
+      accs.forEach(function(a){
+        var d = computeDeltas(a.history, a.currentFollowers, 'followers');
+        if(d.day != null){ vaDayTotal += d.day; hasDay = true; }
+        if(d.week != null){ vaWeekTotal += d.week; hasWeek = true; }
+      });
+      var deltaText = 'Yesterday: ' + (hasDay ? fmtDelta(vaDayTotal) : '—') + ' &middot; This week: ' + (hasWeek ? fmtDelta(vaWeekTotal) : '—');
       return '' +
         '<div class="tile">' +
           '<p class="label">Total Followers &mdash; ' + escapeHtml(va) + '</p>' +
           '<p class="num mono">' + fmtInt(vaFollowers) + '</p>' +
           '<p class="' + gainClass + '">' + gainText + '</p>' +
+          '<p class="sub mono">' + deltaText + '</p>' +
         '</div>';
     }).join('');
 
@@ -614,11 +656,16 @@
         var gain = followersGained(a);
         var gainClass = gain > 0 ? 'gain' : 'gain zero';
         var gainText = gain > 0 ? '+' + fmtInt(gain) : fmtInt(gain);
+        var d = computeDeltas(a.history, a.currentFollowers, 'followers');
+        var dayClass = (d.day > 0) ? 'gain' : 'gain zero';
+        var weekClass = (d.week > 0) ? 'gain' : 'gain zero';
         return '' +
           '<div class="gr-row">' +
             '<div class="handle">@' + escapeHtml(a.handle) + '</div>' +
             '<div class="gr-stat"><span class="v mono">' + fmtInt(a.currentFollowers) + '</span><span class="k">Followers</span></div>' +
-            '<div class="gr-stat"><span class="v mono ' + gainClass + '">' + gainText + '</span><span class="k">Gained</span></div>' +
+            '<div class="gr-stat"><span class="v mono ' + gainClass + '">' + gainText + '</span><span class="k">All-time</span></div>' +
+            '<div class="gr-stat"><span class="v mono ' + dayClass + '">' + fmtDelta(d.day) + '</span><span class="k">Yesterday</span></div>' +
+            '<div class="gr-stat"><span class="v mono ' + weekClass + '">' + fmtDelta(d.week) + '</span><span class="k">This week</span></div>' +
             '<div class="gr-stat"><span class="v mono">' + fmtInt(a.posts) + '</span><span class="k">Posts</span></div>' +
             '<div class="gr-stat"><span class="v mono">' + fmtInt(a.following) + '</span><span class="k">Following</span></div>' +
           '</div>';
